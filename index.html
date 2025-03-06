@@ -1,66 +1,65 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Transações</title>
+    <title>Controle Financeiro</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            width: 50%;
-            margin: 50px auto;
+            text-align: center;
+            background-color: #f4f4f9;
             padding: 20px;
+        }
+
+        h2 {
+            color: #2e3d49;
+        }
+
+        form {
+            margin-bottom: 20px;
             background-color: #fff;
+            padding: 15px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
+
         label {
+            font-size: 1rem;
+            margin-bottom: 10px;
             display: block;
-            margin: 10px 0 5px;
-            font-weight: bold;
         }
+
         input, select {
             width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
-        button {
-            width: 100%;
             padding: 10px;
+            margin: 8px 0 20px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
             background-color: #4CAF50;
             color: white;
-            font-size: 16px;
+            padding: 10px 15px;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
+            width: 100%;
+            font-size: 1.1rem;
         }
+
         button:hover {
             background-color: #45a049;
-        }
-        .error {
-            color: red;
-            display: none;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Registrar Transação</h1>
-    <form id="transactionForm">
-        <label for="tipo">Tipo de Transação:</label>
+    <h2>Controle Financeiro</h2>
+
+    <form id="transaction-form">
+        <label for="tipo">Tipo:</label>
         <select id="tipo" required>
             <option value="Entrada">Entrada</option>
             <option value="Saída">Saída</option>
@@ -76,45 +75,30 @@
         <input type="date" id="data" required>
 
         <button type="submit">Adicionar Transação</button>
-        <p class="error" id="error">Erro ao enviar dados. Tente novamente.</p>
     </form>
-</div>
 
-<script>
-    document.getElementById("transactionForm").addEventListener("submit", function(event) {
-        event.preventDefault(); // Impede o envio tradicional do formulário
+    <script>
+        document.getElementById('transaction-form').addEventListener('submit', function(event) {
+            event.preventDefault();
 
-        var tipo = document.getElementById("tipo").value;
-        var descricao = document.getElementById("descricao").value;
-        var valor = document.getElementById("valor").value;
-        var data = document.getElementById("data").value;
+            let tipo = document.getElementById('tipo').value;
+            let descricao = document.getElementById('descricao').value;
+            let valor = document.getElementById('valor').value;
+            let data = document.getElementById('data').value;
 
-        var dataToSend = {
-            tipo: tipo,
-            descricao: descricao,
-            valor: parseFloat(valor).toFixed(2), // Formata o valor para 2 casas decimais
-            data: data
-        };
-
-        var url = "https://script.google.com/macros/s/AKfycbzpuuU4VDbZqHJj6txfXimumgmBxI5OyzAveIGVinEtaaKScfrFUoSAKKZB3rJveW1q/exec"; // Seu URL do Apps Script
-
-        fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(dataToSend)
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.message || "Transação adicionada com sucesso!");
-        })
-        .catch(error => {
-            document.getElementById("error").style.display = "block";
-            console.error("Erro ao enviar dados:", error);
+            fetch('https://script.google.com/macros/s/AKfycbzpuuU4VDbZqHJj6txfXimumgmBxI5OyzAveIGVinEtaaKScfrFUoSAKKZB3rJveW1q/exec', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tipo, descricao, valor, data })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                document.getElementById('transaction-form').reset();
+            })
+            .catch(error => alert('Erro ao enviar transação!'));
         });
-    });
-</script>
+    </script>
 
 </body>
 </html>
