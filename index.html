@@ -1,54 +1,42 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle Financeiro</title>
+    <title>Formulário de Transações</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f9;
+            margin: 20px;
             padding: 20px;
         }
-
-        h2 {
-            color: #2e3d49;
-        }
-
-        form {
-            margin-bottom: 20px;
-            background-color: #fff;
-            padding: 15px;
+        .form-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-
         label {
-            font-size: 1rem;
-            margin-bottom: 10px;
             display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
         }
-
-        input, select {
+        input[type="text"], input[type="date"], input[type="number"] {
             width: 100%;
-            padding: 10px;
-            margin: 8px 0 20px 0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
-
         button {
             background-color: #4CAF50;
             color: white;
             padding: 10px 15px;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
-            width: 100%;
-            font-size: 1.1rem;
         }
-
         button:hover {
             background-color: #45a049;
         }
@@ -56,47 +44,56 @@
 </head>
 <body>
 
-    <h2>Controle Financeiro</h2>
+    <div class="form-container">
+        <h2>Registrar Transação</h2>
+        <form id="transactionForm">
+            <label for="tipo">Tipo:</label>
+            <input type="text" id="tipo" name="tipo" required>
 
-    <form id="transaction-form">
-        <label for="tipo">Tipo:</label>
-        <select id="tipo" required>
-            <option value="Entrada">Entrada</option>
-            <option value="Saída">Saída</option>
-        </select>
+            <label for="data">Data:</label>
+            <input type="date" id="data" name="data" required>
 
-        <label for="descricao">Descrição:</label>
-        <input type="text" id="descricao" required>
+            <label for="valor">Valor:</label>
+            <input type="number" id="valor" name="valor" required>
 
-        <label for="valor">Valor:</label>
-        <input type="number" id="valor" required>
-
-        <label for="data">Data:</label>
-        <input type="date" id="data" required>
-
-        <button type="submit">Adicionar Transação</button>
-    </form>
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
 
     <script>
-        document.getElementById('transaction-form').addEventListener('submit', function(event) {
-            event.preventDefault();
+        document.getElementById('transactionForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Evita o envio do formulário tradicional
 
-            let tipo = document.getElementById('tipo').value;
-            let descricao = document.getElementById('descricao').value;
-            let valor = document.getElementById('valor').value;
-            let data = document.getElementById('data').value;
+            // Coleta os dados do formulário
+            var tipo = document.getElementById('tipo').value;
+            var data = document.getElementById('data').value;
+            var valor = document.getElementById('valor').value;
 
-            fetch('https://script.google.com/macros/s/AKfycbzpuuU4VDbZqHJj6txfXimumgmBxI5OyzAveIGVinEtaaKScfrFUoSAKKZB3rJveW1q/exec', {
+            // Prepara os dados para enviar
+            var dados = {
+                tipo: tipo,
+                data: data,
+                valor: valor
+            };
+
+            // Envia os dados via POST para o Google Apps Script
+            fetch('176yDC6MU_INfeN73gVMMgaj_3NrLm9LxwgkT3L1tGf8', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tipo, descricao, valor, data })
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dados)
             })
-            .then(response => response.json())
+            .then(response => response.text())
             .then(data => {
-                alert(data.message);
-                document.getElementById('transaction-form').reset();
+                alert('Transação registrada com sucesso!');
+                // Limpa os campos do formulário
+                document.getElementById('transactionForm').reset();
             })
-            .catch(error => alert('Erro ao enviar transação!'));
+            .catch(error => {
+                console.error('Erro ao enviar dados:', error);
+                alert('Ocorreu um erro ao registrar a transação.');
+            });
         });
     </script>
 
